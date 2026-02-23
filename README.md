@@ -56,12 +56,12 @@ Para configurar o ambiente de desenvolvimento e preparar a extração e as plota
    cp .env.example .env
    ```
 
-   Abra o arquivo `.env` gerado e preencha as variáveis de acesso `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET` e `REDDIT_CLIENT_USER_AGENT` com seus tokens do Reddit Apps.\*
+   Abra o arquivo `.env` gerado e preencha as variáveis de acesso `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET` e `REDDIT_CLIENT_USERNAME` com seus tokens do Reddit Apps.\*
 
    Alternativamente, você pode exportar essas variáveis de ambiente diretamente no seu terminal ou ambiente de execução, sem a necessidade de criar o arquivo `.env` localmente:\*
 
    ```bash
-   export REDDIT_CLIENT_ID="seu_client_id"
-   export REDDIT_CLIENT_SECRET="seu_client_secret"
-   export REDDIT_CLIENT_USER_AGENT="seu_user_agent"
+   export REDDIT_CLIENT_ID='seu_client_id'
+   export REDDIT_CLIENT_SECRET='seu_client_secret'
+   export REDDIT_CLIENT_USERNAME='seu_client_username'
    ```

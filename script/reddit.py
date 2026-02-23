@@ -50,7 +50,7 @@ def main() -> None:
     try:
         reddit_client_id = os.environ["REDDIT_CLIENT_ID"]
         reddit_client_secret = os.environ["REDDIT_CLIENT_SECRET"]
-        reddit_client_user_agent = os.environ["REDDIT_CLIENT_USER_AGENT"]
+        reddit_client_username = os.environ["REDDIT_CLIENT_USERNAME"]
     except KeyError as e:
         fatal(f"erro ao carregar a variável de ambiente {e}")
 
@@ -62,7 +62,7 @@ def main() -> None:
     reddit_client = create_reddit_client(
         reddit_client_id,
         reddit_client_secret,
-        reddit_client_user_agent,
+        reddit_client_username,
     )
 
     all_posts: list[PostRecord] = []
