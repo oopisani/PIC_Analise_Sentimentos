@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-import argparse
+from sa.common import Parser, ParserNamespace
+
 from pathlib import Path
 
 DEFAULT_SHEETS = ["positivo", "negativo", "neutro"]
@@ -12,7 +13,7 @@ DEFAULT_TOP_N = 20
 """Teto delimitante máximo gerado nas representações das Barras Analíticas de Plotagem."""
 
 
-class WordCloudParser(argparse.ArgumentParser):
+class WordCloudParser(Parser):
     """
     Parser adaptado para orquestração da camada de processamento visual Plt/WordCloud.
 
@@ -21,7 +22,7 @@ class WordCloudParser(argparse.ArgumentParser):
     """
 
 
-class WordCloudParserNamespace(argparse.Namespace):
+class WordCloudParserNamespace(ParserNamespace):
     """
     Estruturação final de namespace garantindo a validação explícita no Mypy.
 
@@ -64,7 +65,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         "--input-path",
         type=Path,
         required=True,
-        help="Caminho do arquivo de entrada (Excel ou CSV).",
+        help="Caminho do arquivo de entrada contendo os dados (Excel ou CSV).",
     )
 
     parser.add_argument(
@@ -72,7 +73,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         "--output-dir",
         type=Path,
         required=True,
-        help="Diretório de saída para as imagens geradas.",
+        help="Caminho do diretório de saída para as imagens geradas.",
     )
 
     parser.add_argument(
@@ -81,7 +82,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         type=str,
         nargs="+",
         default=DEFAULT_SHEETS,
-        help=f"Nomes das abas do Excel a processar (default: {' '.join(DEFAULT_SHEETS)}).",
+        help=f"Nome(s) da(s) aba(s) a processar, separados por espaço (default: {' '.join(DEFAULT_SHEETS)}).",
     )
 
     parser.add_argument(
@@ -89,7 +90,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         "--top-n",
         type=int,
         default=DEFAULT_TOP_N,
-        help=f"Número de palavras mais frequentes para o gráfico de barras (default: {DEFAULT_TOP_N}).",
+        help=f"Quantidade de palavras mais frequentes a exibir no gráfico (default: {DEFAULT_TOP_N}).",
     )
 
     parser.add_argument(
@@ -97,7 +98,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         "--extras",
         type=Path,
         default=None,
-        help="Caminho para CSV de stopwords extras (coluna 'palavra').",
+        help="Caminho do arquivo CSV contendo stopwords extras.",
     )
 
     return parser

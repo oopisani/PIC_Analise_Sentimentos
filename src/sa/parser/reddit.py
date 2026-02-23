@@ -2,7 +2,8 @@
 
 from __future__ import annotations
 
-import argparse
+from sa.common import Parser, ParserNamespace
+
 from pathlib import Path
 
 from sa.file import FileFormat
@@ -21,7 +22,7 @@ DEFAULT_TOTAL_PER_WORD = 50000
 """Teto operacional máximo garantido (cap) por tópico analisado."""
 
 
-class RedditParser(argparse.ArgumentParser):
+class RedditParser(Parser):
     """
     Parser configurado unicamente para lidar com o script de coleta contínua da API (RedditCollector).
 
@@ -29,7 +30,7 @@ class RedditParser(argparse.ArgumentParser):
     """
 
 
-class RedditParserNamespace(argparse.Namespace):
+class RedditParserNamespace(ParserNamespace):
     """
     Estrutura que vincula forte tipagem nas propriedades do wrapper Namespace.
 
@@ -73,7 +74,7 @@ def create_reddit_parser() -> RedditParser:
         type=str,
         nargs="+",
         default=[DEFAULT_SUBREDDIT],
-        help=f"Subreddit(s) alvo, separados por espaço (default: {DEFAULT_SUBREDDIT})",
+        help=f"Subreddit(s) alvo da coleta, separados por espaço (default: {DEFAULT_SUBREDDIT}).",
     )
 
     parser.add_argument(
@@ -82,7 +83,7 @@ def create_reddit_parser() -> RedditParser:
         type=Language,
         choices=[lang.value for lang in Language],
         default=DEFAULT_LANGUAGE.value,
-        help=f"Idioma dos posts a serem coletados (default: {DEFAULT_LANGUAGE.value})",
+        help=f"Idioma dos posts a serem coletados (default: {DEFAULT_LANGUAGE.value}).",
     )
 
     parser.add_argument(
@@ -90,7 +91,7 @@ def create_reddit_parser() -> RedditParser:
         "--total",
         type=int,
         default=DEFAULT_TOTAL_PER_WORD,
-        help=f"Total de posts por palavra (default: {DEFAULT_TOTAL_PER_WORD})",
+        help=f"Limite máximo de posts coletados por palavra-chave (default: {DEFAULT_TOTAL_PER_WORD}).",
     )
 
     parser.add_argument(
@@ -98,7 +99,7 @@ def create_reddit_parser() -> RedditParser:
         "--output",
         type=Path,
         required=True,
-        help=f"Caminho de saída do arquivo",
+        help="Caminho do arquivo de saída para os posts coletados.",
     )
 
     parser.add_argument(
@@ -107,7 +108,7 @@ def create_reddit_parser() -> RedditParser:
         type=FileFormat,
         choices=[fmt.value for fmt in FileFormat],
         default=DEFAULT_OUTPUT_FORMAT.value,
-        help=f"Formato do arquivo de saída (default: {DEFAULT_OUTPUT_FORMAT.value})",
+        help=f"Formato desejado para o arquivo de saída (default: {DEFAULT_OUTPUT_FORMAT.value}).",
     )
 
     return parser

@@ -8,10 +8,13 @@ consistente e intercambiável.
 """
 
 from .file import FileConverterABC, FileReaderABC, FileSaverABC, FileWriterABC
+from .parser import Parser, ParserNamespace
 
 __all__ = [
     "FileConverterABC",
     "FileReaderABC",
     "FileSaverABC",
     "FileWriterABC",
+    "Parser",
+    "ParserNamespace",
 ]
