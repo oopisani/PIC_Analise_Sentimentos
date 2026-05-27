@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
 
+from sa.common import Parser, ParserNamespace
 from sa.file import FileFormat
 
 DEFAULT_INPUT_FORMAT = FileFormat.CSV
@@ -14,16 +14,16 @@ DEFAULT_OUTPUT_FORMAT = FileFormat.XLSX
 """Formato padrão estipulado em caso de não assinalamento na conversão de saída."""
 
 
-class ConverterParser(argparse.ArgumentParser):
+class ConverterParser(Parser):
     """
     Parser adaptado configurado para lidar com o conversor de arquivos estático.
 
-    Herda a interface padrão do `argparse.ArgumentParser` fornecendo um ponto de extensão
+    Herda a interface padrão do `Parser` fornecendo um ponto de extensão
     separado para os scripts `sa-converter` ou suas abstrações.
     """
 
 
-class ConverterParserNamespace(argparse.Namespace):
+class ConverterParserNamespace(ParserNamespace):
     """
     Interface que aplica anotação explícita de tipos no retorno processado.
 
@@ -56,7 +56,7 @@ def create_conveter_parser() -> ConverterParser:
 
     parser = ConverterParser(
         prog="sa-converter",
-        description="Converte arquivos entre formatos suportados pela SA.",
+        description="Converte arquivos de dados entre os formatos suportados.",
     )
 
     parser.add_argument(
@@ -72,7 +72,7 @@ def create_conveter_parser() -> ConverterParser:
         "--output-path",
         type=Path,
         required=True,
-        help="Caminho do arquivo de saída após a conversão.",
+        help="Caminho do arquivo de saída gerado pela conversão.",
     )
 
     parser.add_argument(
@@ -81,7 +81,7 @@ def create_conveter_parser() -> ConverterParser:
         type=FileFormat,
         choices=[fmt for fmt in FileFormat],
         required=True,
-        help=f"Formato do arquivo de entrada.",
+        help="Formato original do arquivo de entrada.",
     )
 
     parser.add_argument(
@@ -90,7 +90,7 @@ def create_conveter_parser() -> ConverterParser:
         type=FileFormat,
         choices=[fmt for fmt in FileFormat],
         required=True,
-        help=f"Formato do arquivo de saída.",
+        help="Formato desejado para o arquivo de saída.",
     )
 
     return parser

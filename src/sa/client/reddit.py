@@ -1,4 +1,5 @@
 from praw import Reddit  # type: ignore[import-untyped]
+from string import Template
 
 
 class RedditClient(Reddit):
@@ -11,8 +12,11 @@ class RedditClient(Reddit):
     sem alterar o contrato da biblioteca subjacente.
     """
 
+    CLIENT_VERSION = "0.2"
+    USER_AGENT_TEMPLATE = Template(f"python:analise-sentimentos-bot:v{CLIENT_VERSION} (by /u/$username)")
 
-def create_reddit_client(client_id: str, secret: str, user_agent: str) -> RedditClient:
+
+def create_reddit_client(client_id: str, secret: str, user_name: str) -> RedditClient:
     """
     Cria e retorna uma instância autenticada de `RedditClient`.
 
@@ -39,6 +43,8 @@ def create_reddit_client(client_id: str, secret: str, user_agent: str) -> Reddit
         - As credenciais devem ser carregadas de variáveis de ambiente, nunca
           embutidas diretamente no código.
     """
+
+    user_agent = RedditClient.USER_AGENT_TEMPLATE.safe_substitute(username=user_name)
 
     return RedditClient(
         client_id=client_id,
