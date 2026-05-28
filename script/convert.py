@@ -32,21 +32,21 @@ def _main() -> None:
     output_path = args.output_path.resolve()
 
     if not input_path.exists():
-        fatal(f"O arquivo de entrada {str(input_path)!r} não existe.")
+        fatal(f"The input file {str(input_path)!r} does not exist.")
 
     if output_path.exists():
-        fatal(f"O arquivo de saída {str(output_path)!r} já existe. Por favor, escolha um caminho diferente ou remova o arquivo existente.")
+        fatal(f"The output file {str(output_path)!r} already exists. Please choose a different path or remove the existing file.")
 
-    logger.info("Convertendo %s (%s) para %s (%s)...", input_path, args.input_format.value, output_path, args.output_format.value)
+    logger.info("Converting %s (%s) to %s (%s)...", input_path, args.input_format.value, output_path, args.output_format.value)
 
     converter = ConverterFactory.get_converter(args.input_format, args.output_format)
 
     try:
         converter.convert(str(input_path), str(output_path))
     except Exception as e:
-        fatal(f"Falha inesperada durante a conversão: {e}")
+        fatal(f"Unexpected failure during conversion: {e}")
 
-    logger.info("Conversão concluída com sucesso: %s", output_path)
+    logger.info("Conversion completed successfully: %s", output_path)
 
 
 def fatal(message: str) -> NoReturn:
@@ -68,12 +68,12 @@ def main() -> None:
     try:
         _main()
     except KeyboardInterrupt:
-        print("Conversão interrompida pelo usuário.")
+        print("Conversion interrupted by user.")
     except ParserError as e:
-        print(f"Erro de uso ou execução: {e}")
+        print(f"Usage or execution error: {e}")
         exit(2)
     except Exception as e:
-        print(f"Falha fatal não tratada: {e}")
+        print(f"Unhandled fatal failure: {e}")
         exit(1)
 
 if __name__ == "__main__":

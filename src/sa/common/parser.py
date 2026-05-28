@@ -31,7 +31,7 @@ class Parser(ABC, ArgumentParser):
             "--verbose",
             type=bool,
             default=False,
-            help="Modo verboso, exibindo informações detalhadas durante a execução do programa.",
+            help="Verbose mode, displaying detailed information during program execution.",
         )
 
     def error(self, message: str) -> NoReturn:

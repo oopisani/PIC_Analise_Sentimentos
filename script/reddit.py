@@ -46,7 +46,7 @@ def _main() -> None:
         reddit_client_secret = os.environ["REDDIT_CLIENT_SECRET"]
         reddit_client_username = os.environ["REDDIT_CLIENT_USERNAME"]
     except KeyError as e:
-        fatal(f"Credencial {e} não encontrada. Certifique-se de que ela está definida no seu arquivo .env ou como variável de sistema.")
+        fatal(f"Credential {e} not found. Make sure it is defined in your .env file or as a system environment variable.")
 
     args = parse_reddit_args(argv[1:])
 
@@ -55,7 +55,7 @@ def _main() -> None:
         logger.setLevel(logging.DEBUG)
 
     if args.output.exists():
-        fatal(f"O arquivo de saída {str(args.output)!r} já existe. Por favor, escolha um caminho diferente ou remova o arquivo existente.")
+        fatal(f"The output file {str(args.output)!r} already exists. Please choose a different path or remove the existing file.")
 
     reddit_client = create_reddit_client(
         reddit_client_id,
@@ -78,7 +78,7 @@ def _main() -> None:
             logger=subreddit_logger,
         )
 
-        subreddit_logger.info("Iniciando a coleta de posts  do subredit %s...", subreddit)
+        subreddit_logger.info("Starting post collection from subreddit r/%s...", subreddit)
 
         try:
             subreddit_posts = list(
@@ -89,9 +89,9 @@ def _main() -> None:
                 )
             )
         except Exception as e:
-            fatal(f"Erro fatal de comunicação com o Reddit ao processar 'r/{subreddit}': {e}. Verifique suas credenciais e conexão.")
+            fatal(f"Fatal error communicating with Reddit while processing 'r/{subreddit}': {e}. Verify your credentials and internet connection.")
 
-        subreddit_logger.info("Coleta do subredit %s finalizada. Total de posts: %d", subreddit, len(subreddit_posts))
+        subreddit_logger.info("Collection from subreddit r/%s finished. Total posts: %d", subreddit, len(subreddit_posts))
 
         all_posts.extend(subreddit_posts)
 
@@ -99,17 +99,17 @@ def _main() -> None:
 
     match args.format:
         case FileFormat.CSV:
-            logger.info("Exportando dados para CSV...")
+            logger.info("Exporting data to CSV...")
 
             CSVPostSaver(output_filepath).save(all_posts)
         case FileFormat.XLSX:
-            logger.info("Exportando dados para XLSX...")
+            logger.info("Exporting data to XLSX...")
 
             XLSXPostSaver(output_filepath).save(all_posts)
         case _:
-            logger.error("Formato de armazenamento desconhecido: %s", args.format)
+            logger.error("Unknown storage format: %s", args.format)
 
-    logger.info("Dados exportados com sucesso em %s", output_filepath)
+    logger.info("Data exported successfully to %s", output_filepath)
 
 
 def fatal(message: str) -> NoReturn:
@@ -128,12 +128,12 @@ def main() -> None:
     try:
         _main()
     except KeyboardInterrupt:
-        print("Coleta interrompida pelo usuário.")
+        print("Collection interrupted by user.")
     except ParserError as e:
-        print(f"Erro de uso: {e}")
+        print(f"Usage error: {e}")
         exit(2)
     except Exception as e:
-        print(f"Falha fatal não tratada: {e}")
+        print(f"Unhandled fatal failure: {e}")
         exit(1)
 
 if __name__ == "__main__":

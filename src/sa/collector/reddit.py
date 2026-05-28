@@ -94,7 +94,7 @@ class RedditCollector:
         content_hashes: set[str] = set()
 
         for keyword in keywords:
-            self._log(f"Buscando palavra-chave: '{keyword}' | Limite por palavra: {total_per_word}")
+            self._log(f"Searching keyword: '{keyword}' | Limit per word: {total_per_word}")
 
             subreddit = self._client.subreddit(self._subreddit_name)
 
@@ -103,16 +103,16 @@ class RedditCollector:
                 clean_post = self._normalize_post(post, keyword)
 
                 if not self._check_post_language(clean_post, lang):
-                    self._log(f"Post {clean_post['post_id']} ignorado (não é {lang.value.upper()})")
+                    self._log(f"Post {clean_post['post_id']} ignored (is not {lang.value.upper()})")
                     continue
 
                 if clean_post["content_hash"] in content_hashes:
-                    self._log(f"Post {clean_post['post_id']} ignorado (duplicado)")
+                    self._log(f"Post {clean_post['post_id']} ignored (duplicate)")
                     continue
 
                 content_hashes.add(clean_post["content_hash"])
 
-                self._log(f"Post {clean_post['post_id']} aceito!")
+                self._log(f"Post {clean_post['post_id']} accepted!")
 
                 yield clean_post
 

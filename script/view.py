@@ -46,39 +46,39 @@ def _main() -> None:
     output_dir = args.output_dir.resolve()
 
     if not input_path.exists():
-        fatal(f"O arquivo de entrada {str(input_path)!r} não existe.")
+        fatal(f"The input file {str(input_path)!r} does not exist.")
 
     if args.extras and not args.extras.exists():
-        fatal(f"O arquivo de stopwords adicionais {str(args.extras)!r} não foi encontrado.")
+        fatal(f"The additional stopwords file {str(args.extras)!r} was not found.")
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info("Carregando modelo spaCy...")
+    logger.info("Loading spaCy model...")
 
     nlp = spacy.load("pt_core_news_lg")
 
-    logger.info("Construindo stopwords...")
+    logger.info("Building stopwords...")
 
     stopwords = build_stopwords(lang="portuguese", extras_path=args.extras)
 
     visual_pos = {"NOUN", "ADJ"}
 
     for sheet in args.sheets:
-        logger.info("Processando aba '%s'...", sheet)
+        logger.info("Processing sheet '%s'...", sheet)
 
         reader = XLSXColumnReader(input_path, sheet_name=sheet, column="texto")
 
         try:
             texts = reader.read()
         except KeyError:
-            logger.warning("Aba '%s' não possui coluna 'texto'. Pulando.", sheet)
+            logger.warning("Sheet '%s' does not have 'texto' column. Skipping.", sheet)
             continue
 
         cleaned_texts = [preprocess_text(t, stopwords, nlp, allowed_pos=visual_pos) for t in texts]
         combined = " ".join(" ".join(t) for t in cleaned_texts)
 
         if not combined.strip():
-            logger.warning("Nenhum texto restante após limpeza na aba '%s'. Pulando.", sheet)
+            logger.warning("No text remaining after cleaning in sheet '%s'. Skipping.", sheet)
 
             continue
 
@@ -91,19 +91,19 @@ def _main() -> None:
 
         generate_wordcloud(combined, wc_path, colormap=colormap)
 
-        logger.info("Nuvem de palavras salva em %s", wc_path)
+        logger.info("Wordcloud saved to %s", wc_path)
 
         chart_path = output_dir / f"frequencia_{sheet}.png"
 
         generate_frequency_chart(word_counts, chart_path, color=bar_color)
 
-        logger.info("Gráfico de frequência salvo em %s", chart_path)
-        logger.info("Top %d palavras para '%s':", args.top_n, sheet)
+        logger.info("Frequency chart saved to %s", chart_path)
+        logger.info("Top %d words for '%s':", args.top_n, sheet)
 
         for word, freq in word_counts:
             logger.info("  %-15s | %d", word, freq)
 
-    logger.info("Processo finalizado com sucesso.")
+    logger.info("Process finished successfully.")
 
 
 def fatal(message: str) -> NoReturn:
@@ -117,12 +117,12 @@ def main() -> None:
     try:
         _main()
     except KeyboardInterrupt:
-        print("Processo interrompido pelo usuário.")
+        print("Process interrupted by user.")
     except ParserError as e:
-        print(f"Erro de uso: {e}")
+        print(f"Usage error: {e}")
         exit(2)
     except Exception as e:
-        print(f"Falha fatal não tratada: {e}")
+        print(f"Unhandled fatal failure: {e}")
         exit(1)
 
 if __name__ == "__main__":
