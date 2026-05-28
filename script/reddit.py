@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 logger = create_logger(__name__)
 
 
-def main() -> None:
+def _main() -> None:
     """
     Inicializador transacional do script encarregado da captura em série das chamadas Crawler.
 
@@ -45,9 +45,13 @@ def main() -> None:
         reddit_client_secret = os.environ["REDDIT_CLIENT_SECRET"]
         reddit_client_username = os.environ["REDDIT_CLIENT_USERNAME"]
     except KeyError as e:
-        fatal(f"erro ao carregar a variável de ambiente {e}")
+        fatal(f"Credencial {e} não encontrada. Certifique-se de que ela está definida no seu arquivo .env ou como variável de sistema.")
 
     args = parse_reddit_args(argv[1:])
+
+    if args.verbose:
+        import logging
+        logger.setLevel(logging.DEBUG)
 
     if args.output.exists():
         fatal(f"O arquivo de saída {str(args.output)!r} já existe. Por favor, escolha um caminho diferente ou remova o arquivo existente.")
@@ -63,6 +67,10 @@ def main() -> None:
     for subreddit in args.subreddits:
         subreddit_logger = create_reddit_logger(subreddit)
 
+        if args.verbose:
+            import logging
+            subreddit_logger.setLevel(logging.DEBUG)
+
         scrapper = RedditCollector(
             reddit_client=reddit_client,
             subreddit_name=subreddit,
@@ -71,13 +79,16 @@ def main() -> None:
 
         subreddit_logger.info("Iniciando a coleta de posts  do subredit %s...", subreddit)
 
-        subreddit_posts = list(
-            scrapper.collect(
-                keywords=args.keywords,
-                lang=Language(args.language),
-                total_per_word=args.total,
+        try:
+            subreddit_posts = list(
+                scrapper.collect(
+                    keywords=args.keywords,
+                    lang=Language(args.language),
+                    total_per_word=args.total,
+                )
             )
-        )
+        except Exception as e:
+            fatal(f"Erro fatal de comunicação com o Reddit ao processar 'r/{subreddit}': {e}. Verifique suas credenciais e conexão.")
 
         subreddit_logger.info("Coleta do subredit %s finalizada. Total de posts: %d", subreddit, len(subreddit_posts))
 
@@ -112,8 +123,17 @@ def fatal(message: str) -> NoReturn:
     exit(1)
 
 
-if __name__ == "__main__":
+def main() -> None:
     try:
-        main()
+        _main()
     except KeyboardInterrupt:
-        print("\nColeta interrompida pelo usuário.")
+        print("Coleta interrompida pelo usuário.")
+    except RuntimeError as e:
+        print(f"Erro de uso ou execução: {e}")
+        exit(2)
+    except Exception as e:
+        print(f"Falha fatal não tratada: {e}")
+        exit(1)
+
+if __name__ == "__main__":
+    main()

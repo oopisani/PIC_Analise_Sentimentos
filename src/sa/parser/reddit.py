@@ -44,6 +44,7 @@ class RedditParserNamespace(ParserNamespace):
         total (int): Volume numérico int teto usado na função `limit`.
         output (Path): Path consolidado garantindo compatibilidade da saída.
         format (FileFormat): Sinalética rigorosa para driver interpretador (pandas: csv/xlsx).
+        verbose (bool): Define a verbosidade do logger (DEBUG vs INFO).
     """
 
     subreddits: list[str]
@@ -52,6 +53,7 @@ class RedditParserNamespace(ParserNamespace):
     total: int
     output: Path
     format: FileFormat
+    verbose: bool
 
 
 def create_reddit_parser() -> RedditParser:

@@ -12,7 +12,7 @@ from sa.parser import parse_converter_args
 logger = create_logger(__name__)
 
 
-def main() -> None:
+def _main() -> None:
     """
     Ponto de inicialização do programa de console de conversão.
 
@@ -39,7 +39,11 @@ def main() -> None:
     logger.info("Convertendo %s (%s) para %s (%s)...", input_path, args.input_format.value, output_path, args.output_format.value)
 
     converter = ConverterFactory.get_converter(args.input_format, args.output_format)
-    converter.convert(str(input_path), str(output_path))
+
+    try:
+        converter.convert(str(input_path), str(output_path))
+    except Exception as e:
+        fatal(f"Falha inesperada durante a conversão: {e}")
 
     logger.info("Conversão concluída com sucesso: %s", output_path)
 
@@ -59,8 +63,17 @@ def fatal(message: str) -> NoReturn:
     exit(1)
 
 
-if __name__ == "__main__":
+def main() -> None:
     try:
-        main()
+        _main()
     except KeyboardInterrupt:
-        print("\nConversão interrompida pelo usuário.")
+        print("Conversão interrompida pelo usuário.")
+    except RuntimeError as e:
+        print(f"Erro de uso ou execução: {e}")
+        exit(2)
+    except Exception as e:
+        print(f"Falha fatal não tratada: {e}")
+        exit(1)
+
+if __name__ == "__main__":
+    main()

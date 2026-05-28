@@ -181,7 +181,7 @@ class RedditCollector:
 
     def _log(self, message: str) -> None:
         """
-        Emite uma mensagem de log no nível INFO, se um logger estiver configurado.
+        Emite uma mensagem de log no nível DEBUG, se um logger estiver configurado.
 
         Método utilitário interno que encapsula a chamada ao logger, permitindo
         que a classe opere sem logger sem necessidade de verificações externas.
@@ -194,4 +194,4 @@ class RedditCollector:
         """
 
         if self._logger:
-            self._logger.info(message)
+            self._logger.debug(message)

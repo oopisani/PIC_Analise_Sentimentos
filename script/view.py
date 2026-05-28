@@ -28,7 +28,7 @@ BAR_COLORS: dict[str, str] = {
 logger = create_logger(__name__)
 
 
-def main() -> None:
+def _main() -> None:
     """
     Rotina construtora central iterável produtora do motor final visual da pipeline (View Script CLI).
 
@@ -46,6 +46,9 @@ def main() -> None:
 
     if not input_path.exists():
         fatal(f"O arquivo de entrada {str(input_path)!r} não existe.")
+
+    if args.extras and not args.extras.exists():
+        fatal(f"O arquivo de stopwords adicionais {str(args.extras)!r} não foi encontrado.")
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -109,8 +112,17 @@ def fatal(message: str) -> NoReturn:
     exit(1)
 
 
-if __name__ == "__main__":
+def main() -> None:
     try:
-        main()
+        _main()
     except KeyboardInterrupt:
-        print("\nProcesso interrompido pelo usuário.")
+        print("Processo interrompido pelo usuário.")
+    except RuntimeError as e:
+        print(f"Erro de uso ou execução: {e}")
+        exit(2)
+    except Exception as e:
+        print(f"Falha fatal não tratada: {e}")
+        exit(1)
+
+if __name__ == "__main__":
+    main()
