@@ -35,11 +35,12 @@ Para configurar o ambiente de desenvolvimento e preparar a extração e as plota
    .venv\Scripts\activate
    ```
 
-3. **Instale as dependências essenciais:**
-   O ecossistema utiliza bibliotecas pesadas de mineração, PRAW (Reddit API), NLP e plotagem de gráficos:
+3. **Instale as dependências essenciais e o pacote local:**
+   O ecossistema utiliza bibliotecas pesadas de mineração, PRAW (Reddit API), NLP e plotagem de gráficos. A instalação do pacote local registrará os comandos executáveis (`sa-reddit`, `sa-view`, `sa-convert`) na sua interface:
 
    ```bash
    pip install -r requirements.txt
+   pip install -e .
    ```
 
 4. **Baixe o modelo do spaCy:**
