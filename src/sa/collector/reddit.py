@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from praw import Reddit  # type: ignore[import-untyped]
     from praw.models import Submission  # type: ignore[import-untyped]
 
-    from sa.model import KeywordsByPolarity, Language, Polarity, PostRecord
+    from sa.model import Language, PostRecord
 
 
 class RedditCollector:
@@ -17,12 +17,12 @@ class RedditCollector:
     Responsável pela coleta, filtragem e pré-processamento de posts do Reddit.
 
     Orquestra o processo de busca de posts em um subreddit específico a partir de
-    palavras-chave organizadas por polaridade (ex.: positivo, negativo, neutro).
+    uma lista de palavras-chave.
     Cada post coletado passa por normalização de texto, verificação de idioma e
     deduplicação antes de ser entregue ao consumidor via generator.
 
     Integração no pipeline de NLP:
-        - Recebe as palavras-chave categorizadas por polaridade (`KeywordsByPolarity`).
+        - Recebe uma lista de palavras-chave para busca.
         - Utiliza `normalize_text` (subpacote `nlp`) para limpar título e corpo do post.
         - Utiliza `matches_language` (subpacote `nlp`) para filtrar posts no idioma desejado.
         - Empacota cada post no formato `PostRecord` via `pack_post` (subpacote `model`).
@@ -57,21 +57,20 @@ class RedditCollector:
         self._logger = logger
         """Logger opcional para registro de eventos durante a coleta."""
 
-    def collect(self, ckw: "KeywordsByPolarity", lang: "Language", total_per_word: int) -> Generator["PostRecord", None, None]:
+    def collect(self, keywords: list[str], lang: "Language", total_per_word: int) -> Generator["PostRecord", None, None]:
         """
-        Coleta posts de um subreddit baseando-se nas categorias e palavras-chave.
-        Retorna lista de dicionários com texto, categoria e palavra-chave associada.
+        Coleta posts de um subreddit baseando-se nas palavras-chave fornecidas.
+        Retorna lista de dicionários com texto limpo e palavra-chave associada.
 
-        Itera sobre cada categoria de polaridade e suas respectivas palavras-chave,
+        Itera sobre as palavras-chave,
         realizando buscas no subreddit via API do Reddit. Para cada resultado, aplica
         um pipeline de filtragem sequencial: pré-processamento de texto, verificação
         de idioma e deduplicação por hash de conteúdo. Posts aprovados em todas as
         etapas são emitidos via ``yield``.
 
         Args:
-            ckw (KeywordsByPolarity): Dicionário que mapeia cada polaridade
-                (ex.: positivo, negativo, neutro) a uma lista de palavras-chave
-                de busca associadas.
+            keywords (list[str]): Lista de palavras-chave
+                de busca a serem submetidas à API do Reddit.
             lang (Language): Idioma esperado dos posts. Posts em outros idiomas
                 são descartados com base na detecção feita por `matches_language`.
             total_per_word (int): Limite máximo de posts a recuperar por palavra-chave
@@ -81,7 +80,7 @@ class RedditCollector:
 
         Yields:
             PostRecord: Dicionário estruturado contendo os dados normalizados
-                e metadados do post aceito (id, título, conteúdo, autor, categoria,
+                e metadados do post aceito (id, título, conteúdo, autor,
                 palavra-chave, subreddit e timestamp de criação).
 
         Observações:
@@ -94,36 +93,33 @@ class RedditCollector:
 
         content_hashes: set[str] = set()
 
-        for category, words in ckw.items():
-            self._log(f"Categoria: {category.value.upper()} | Limite por palavra: {total_per_word}")
+        for keyword in keywords:
+            self._log(f"Buscando palavra-chave: '{keyword}' | Limite por palavra: {total_per_word}")
 
-            for keyword in words:
-                self._log(f"Buscando palavra-chave: '{keyword}'")
+            subreddit = self._client.subreddit(self._subreddit_name)
 
-                subreddit = self._client.subreddit(self._subreddit_name)
+            # Pesquisa por palavra-chave no título ou texto
+            for post in subreddit.search(keyword, sort="new", limit=total_per_word):
+                clean_post = self._normalize_post(post, keyword)
 
-                # Pesquisa por palavra-chave no título ou texto
-                for post in subreddit.search(keyword, sort="new", limit=total_per_word):
-                    clean_post = self._normalize_post(post, category, keyword)
+                if not self._check_post_language(clean_post, lang):
+                    self._log(f"Post {clean_post['post_id']} ignorado (não é {lang.value.upper()})")
+                    continue
 
-                    if not self._check_post_language(clean_post, lang):
-                        self._log(f"Post {clean_post['post_id']} ignorado (não é {lang.value.upper()})")
-                        continue
+                if clean_post["content_hash"] in content_hashes:
+                    self._log(f"Post {clean_post['post_id']} ignorado (duplicado)")
+                    continue
 
-                    if clean_post["content_hash"] in content_hashes:
-                        self._log(f"Post {clean_post['post_id']} ignorado (duplicado)")
-                        continue
+                content_hashes.add(clean_post["content_hash"])
 
-                    content_hashes.add(clean_post["content_hash"])
+                self._log(f"Post {clean_post['post_id']} aceito!")
 
-                    self._log(f"Post {clean_post['post_id']} aceito!")
+                yield clean_post
 
-                    yield clean_post
+            if len(content_hashes) >= total_per_word:
+                break
 
-                if len(content_hashes) >= total_per_word:
-                    break
-
-    def _normalize_post(self, post: "Submission", category: "Polarity", keyword: str) -> "PostRecord":
+    def _normalize_post(self, post: "Submission", keyword: str) -> "PostRecord":
         """
         Normaliza e empacota os dados brutos de uma submissão do Reddit em um `PostRecord`.
 
@@ -135,8 +131,6 @@ class RedditCollector:
         Args:
             post (Submission): Objeto de submissão bruto retornado pela API PRAW,
                 contendo os atributos originais do post do Reddit.
-            category (Polarity): Categoria de polaridade associada à palavra-chave
-                que originou a busca deste post (ex.: positivo, negativo, neutro).
             keyword (str): Palavra-chave de busca que resultou na recuperação deste post.
 
         Returns:
@@ -158,7 +152,6 @@ class RedditCollector:
             title=preprocess_title,
             content=preprocess_content,
             author=str(post.author) if post.author else UNKNOWN_AUTHOR_PLACEHOLDER,
-            category=category,
             keyword=keyword,
             subreddit=self._subreddit_name,
             created_at=post.created_utc,

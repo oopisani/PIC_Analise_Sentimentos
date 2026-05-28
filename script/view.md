@@ -1,6 +1,6 @@
 # Renderizador Gráfico CLI (`view.py`)
 
-Ponto de término visual da engine atuando sobre a extração lexical formatada. O script interage com os dataframes resultantes da máquina gerando gráficos cartesianos de incidência absoluta numérico (Barchart) e Nuvens Dinâmicas Plotáveis via Matplotlib para os sentimentos agrupados (Positivo, Negativo, Neutro).
+Ponto de término visual da engine atuando sobre a extração lexical formatada. O script interage com os dataframes resultantes da máquina gerando gráficos cartesianos de incidência absoluta numérico (Barchart) e Nuvens Dinâmicas Plotáveis via Matplotlib.
 
 ## Papel no Sistema
 
@@ -15,15 +15,15 @@ Verifica inicialmente a robustez de recebimento do Arquivo lido (tabelas lidas v
 Execução direta via módulo Python na raiz do repositório:
 
 ```bash
-python -m script.view -i extracao_dataset.xlsx -o output_graficos/ -s positivo negativo neutro -n 20 -e extra_stopwords.csv
+python -m script.view -i extracao_dataset.xlsx -o output_graficos/ -s posts -n 20 -e extra_stopwords.csv
 ```
 
 ## Parâmetros e Flags Suportados
 
-| Flag Curta | Flag Estendida | Tipo Suportado | Obrigatório |          Valor Padrão          | Propósito / Descrição                                                                                                                       |
-| :--------: | :------------- | :------------: | :---------: | :----------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------ |
-|    `-i`    | `--input-path` |   File Path    |   **Sim**   |               -                | Direciona o banco de dados/planilha estéril consolidado pela máquina que será mapeado.                                                      |
-|    `-o`    | `--output-dir` |  Folder Path   |   **Sim**   |               -                | Pasta vazia pronta pra encher com extensões gráficas (`.PNG` das Nuvens/Charts).                                                            |
-|    `-s`    | `--sheets`     |  $n$ Strings   |     Não     | `[positivo, negativo, neutro]` | Amarra o algoritmo plotador unicamente às seções de interesse delimitadas em abas do Dataset Excel.                                         |
-|    `-n`    | `--top-n`      |    Inteiro     |     Não     |              `20`              | Delimitante matemático (teto inferior) das maiores concentrações de léxicos, definindo a abrangência plotada Matplotlib.                    |
-|    `-e`    | `--extras`     |   File Path    |     Não     |             `None`             | Fornecimento aditivo dinâmico: Manda planilhas com dicionários adicionais injetáveis de "Palavras a se suprimir" que afetam o parser `NLP`. |
+| Flag Curta | Flag Estendida | Tipo Suportado | Obrigatório | Valor Padrão | Propósito / Descrição                                                                                                                       |
+| :--------: | :------------- | :------------: | :---------: | :----------: | :------------------------------------------------------------------------------------------------------------------------------------------ |
+|    `-i`    | `--input-path` |   File Path    |   **Sim**   |      -       | Direciona o banco de dados/planilha estéril consolidado pela máquina que será mapeado.                                                      |
+|    `-o`    | `--output-dir` |  Folder Path   |   **Sim**   |      -       | Pasta vazia pronta pra encher com extensões gráficas (`.PNG` das Nuvens/Charts).                                                            |
+|    `-s`    | `--sheets`     |  $n$ Strings   |     Não     | `["posts"]`  | Amarra o algoritmo plotador unicamente às seções de interesse delimitadas em abas do Dataset Excel.                                         |
+|    `-n`    | `--top-n`      |    Inteiro     |     Não     |     `20`     | Delimitante matemático (teto inferior) das maiores concentrações de léxicos, definindo a abrangência plotada Matplotlib.                    |
+|    `-e`    | `--extras`     |   File Path    |     Não     |    `None`    | Fornecimento aditivo dinâmico: Manda planilhas com dicionários adicionais injetáveis de "Palavras a se suprimir" que afetam o parser `NLP`. |

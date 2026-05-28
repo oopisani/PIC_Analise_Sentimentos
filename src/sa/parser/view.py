@@ -6,7 +6,7 @@ from sa.common import Parser, ParserNamespace
 
 from pathlib import Path
 
-DEFAULT_SHEETS = ["positivo", "negativo", "neutro"]
+DEFAULT_SHEETS = ["posts"]
 """Abas tabulares base utilizadas quando nenhum `-s` é indicado ao acionar o processador do gráfico."""
 
 DEFAULT_TOP_N = 20

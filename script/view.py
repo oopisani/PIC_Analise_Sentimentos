@@ -15,17 +15,13 @@ from sa.parser import parse_wordcloud_args
 from sa.visualization import generate_frequency_chart, generate_wordcloud
 
 COLORMAPS: dict[str, str] = {
-    "positivo": "viridis",
-    "negativo": "plasma",
-    "neutro": "magma",
+    "posts": "viridis",
 }
 """Matriz mapeando e restringindo tabelas estéticas aos humores do matplotlib correlatos as Sheets das planilhas."""
 
 
 BAR_COLORS: dict[str, str] = {
-    "positivo": "seagreen",
-    "negativo": "indianred",
-    "neutro": "mediumpurple",
+    "posts": "steelblue",
 }
 """Hash map isolando palhetas cores sólidas matplotlib as sheets do Excel correlacionadas dinâmicamente."""
 

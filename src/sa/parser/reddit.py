@@ -39,6 +39,7 @@ class RedditParserNamespace(ParserNamespace):
 
     Attributes:
         subreddits (list[str]): Coleção ordenada das strings (nomes de abas Reddit alvo) processadas em massa.
+        keywords (list[str]): Lista de palavras-chave a serem pesquisadas no reddit.
         language (Language): Estrutura enumerador de filtragem (es, pt).
         total (int): Volume numérico int teto usado na função `limit`.
         output (Path): Path consolidado garantindo compatibilidade da saída.
@@ -46,6 +47,7 @@ class RedditParserNamespace(ParserNamespace):
     """
 
     subreddits: list[str]
+    keywords: list[str]
     language: Language
     total: int
     output: Path
@@ -75,6 +77,15 @@ def create_reddit_parser() -> RedditParser:
         nargs="+",
         default=[DEFAULT_SUBREDDIT],
         help=f"Subreddit(s) alvo da coleta, separados por espaço (default: {DEFAULT_SUBREDDIT}).",
+    )
+
+    parser.add_argument(
+        "-k",
+        "--keywords",
+        type=str,
+        nargs="+",
+        required=True,
+        help="Palavra(s)-chave alvo da coleta, separadas por espaço.",
     )
 
     parser.add_argument(

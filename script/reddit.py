@@ -12,18 +12,11 @@ from sa.client import create_reddit_client
 from sa.collector import RedditCollector
 from sa.file import CSVPostSaver, FileFormat, XLSXPostSaver
 from sa.logger import create_logger, create_reddit_logger
-from sa.model import Language, Polarity
+from sa.model import Language
 from sa.parser import parse_reddit_args
 
 if TYPE_CHECKING:
-    from sa.model import KeywordsByPolarity, PostRecord
-
-DEFAULT_KEYWORDS: "KeywordsByPolarity" = {
-    Polarity.POSITIVE: ["amo", "feliz", "alegre", "adoro"],
-    Polarity.NEGATIVE: ["raiva", "triste", "ódio", "ansioso"],
-    Polarity.NEUTRAL: ["terapia", "autoestima", "sentimento", "apoio"],
-}
-"""Lexo/Tag Matrix padrão injetado no collector quando submetido a execução limpa para iniciar a amostragem."""
+    from sa.model import PostRecord
 
 
 logger = create_logger(__name__)
@@ -80,7 +73,7 @@ def main() -> None:
 
         subreddit_posts = list(
             scrapper.collect(
-                ckw=DEFAULT_KEYWORDS,
+                keywords=args.keywords,
                 lang=Language(args.language),
                 total_per_word=args.total,
             )
