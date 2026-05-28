@@ -1,11 +1,13 @@
 from abc import ABC
-from argparse import ArgumentParser, HelpFormatter, Namespace, RawTextHelpFormatter
-from typing import Callable, NoReturn
+from argparse import Action, ArgumentParser, HelpFormatter, Namespace, RawTextHelpFormatter
+from typing import Any, Callable, NoReturn
+
 
 class ParserError(Exception):
     """
     Exceção base para erros relacionados ao parser.
     """
+
 
 class ParserHelpFormatter(RawTextHelpFormatter):
     """
@@ -25,7 +27,7 @@ class ParserHelpFormatter(RawTextHelpFormatter):
 
         super().__init__(prog, max_help_position=38, width=100)
 
-    def _format_action_invocation(self, action):
+    def _format_action_invocation(self, action: Action) -> str:
         """
         Formata a string de invocação da ação (ex: '-k, --keywords KEYWORDS...').
 
@@ -35,7 +37,7 @@ class ParserHelpFormatter(RawTextHelpFormatter):
 
         if not action.option_strings:
             default = self._get_default_metavar_for_positional(action)
-            metavar, = self._metavar_formatter(action, default)(1)
+            (metavar,) = self._metavar_formatter(action, default)(1)
 
             return metavar
         else:
@@ -47,7 +49,7 @@ class ParserHelpFormatter(RawTextHelpFormatter):
             else:
                 return ", ".join(action.option_strings)
 
-    def _format_args(self, action, default_metavar):
+    def _format_args(self, action: Action, default_metavar: Any) -> str:
         """
         Formata a representação visual dos argumentos baseada no 'nargs' da flag.
 
@@ -59,11 +61,11 @@ class ParserHelpFormatter(RawTextHelpFormatter):
 
         if action.nargs is None:
             return f"{get_metavar(1)[0]}"
-        elif action.nargs == '?':
+        elif action.nargs == "?":
             return f"[{get_metavar(1)[0]}]"
-        elif action.nargs == '*':
+        elif action.nargs == "*":
             return f"[{get_metavar(1)[0]}...]"
-        elif action.nargs == '+':
+        elif action.nargs == "+":
             return f"{get_metavar(1)[0]}..."
 
         return super()._format_args(action, default_metavar)

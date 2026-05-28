@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import nltk
+import nltk  # type: ignore[import-untyped]
 import spacy
 from unidecode import unidecode
 
@@ -36,7 +36,7 @@ def load_base_stopwords(lang: str = "portuguese") -> set[str]:
 
     nltk.download("stopwords", quiet=True)
 
-    from nltk.corpus import stopwords as nltk_stopwords
+    from nltk.corpus import stopwords as nltk_stopwords  # type: ignore[import-untyped]
 
     spacy_lang = _NLTK_TO_SPACY.get(lang, lang)
     nlp = spacy.blank(spacy_lang)

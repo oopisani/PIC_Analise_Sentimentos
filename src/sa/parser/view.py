@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from sa.common import Parser, ParserNamespace
-
 from pathlib import Path
+
+from sa.common import Parser, ParserNamespace
 
 DEFAULT_SHEETS = ["posts"]
 """Abas tabulares base utilizadas quando nenhum `-s` é indicado ao acionar o processador do gráfico."""
