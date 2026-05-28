@@ -29,6 +29,81 @@ reddit-sentiment-analysis/
     └── visualization/        (Motores de Renderização)
 ```
 
+### 2.1. Diagrama de Relacionamentos (Grafo de Dependências)
+
+O seguinte diagrama ilustra o fluxo de dependências entre as camadas, organizado da esquerda para a direita. As dependências fluem sempre em direção ao domínio central (`common/`, `model/`), respeitando os princípios de Clean Architecture — camadas externas dependem das internas, nunca o contrário:
+
+```mermaid
+flowchart LR
+    subgraph L1 ["Entrypoints"]
+        REDDIT["scripts/reddit.py\n━━━━━━━━━━━━━━\nColeta Reddit"]
+        VIEW["scripts/view.py\n━━━━━━━━━━━━━━\nVisualização"]
+        CONVERT["scripts/convert.py\n━━━━━━━━━━━━━━\nConversão"]
+    end
+
+    subgraph L2 ["CLI Infrastructure"]
+        PARSER["sa/parser/\n━━━━━━━━━━━━━━\nArgparse + Validators"]
+    end
+
+    subgraph L3 ["Orchestration"]
+        COLLECTOR["sa/collector/\n━━━━━━━━━━━━━━\nRedditCollector"]
+        NLP["sa/nlp/\n━━━━━━━━━━━━━━\nLemmatizer / Stopwords"]
+        VIS["sa/visualization/\n━━━━━━━━━━━━━━\nWordCloud / Barchart"]
+    end
+
+    subgraph L4 ["Adapters"]
+        CLIENT["sa/client/\n━━━━━━━━━━━━━━\nPRAW OAuth Client"]
+        FILE["sa/file/\n━━━━━━━━━━━━━━\nCSV / XLSX Savers"]
+    end
+
+    subgraph L5 ["Domain Core"]
+        COMMON["sa/common/\n━━━━━━━━━━━━━━\nABCs & Contracts"]
+        MODEL["sa/model/\n━━━━━━━━━━━━━━\nEnums & Data Types"]
+        LOGGER["sa/logger/\n━━━━━━━━━━━━━━\nTelemetry & Events"]
+    end
+
+    %% Entrypoints → CLI + Orchestrators + Adapters
+    REDDIT --> PARSER
+    REDDIT --> COLLECTOR
+    REDDIT --> CLIENT
+    REDDIT --> FILE
+
+    VIEW --> PARSER
+    VIEW --> NLP
+    VIEW --> VIS
+    VIEW --> FILE
+
+    CONVERT --> PARSER
+    CONVERT --> FILE
+
+    %% Parser → Core
+    PARSER --> COMMON
+    PARSER --> MODEL
+
+    %% Orchestration → Adapters + Core
+    COLLECTOR --> CLIENT
+    COLLECTOR --> COMMON
+    COLLECTOR --> MODEL
+    COLLECTOR --> LOGGER
+
+    NLP --> MODEL
+
+    VIS --> COMMON
+    VIS --> MODEL
+    VIS --> LOGGER
+
+    %% Adapters → Core
+    CLIENT --> COMMON
+    CLIENT --> MODEL
+
+    FILE --> COMMON
+    FILE --> MODEL
+
+    %% Core internal
+    COMMON --> MODEL
+    COMMON --> LOGGER
+```
+
 ## 3. Descrição Detalhada dos Componentes
 
 ### 3.1. CLI e Argument Parsers (`scripts/` & `src/sa/parser/`)
