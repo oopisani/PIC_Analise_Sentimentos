@@ -55,7 +55,7 @@ def create_conveter_parser() -> ConverterParser:
     """
 
     parser = ConverterParser(
-        prog="sa-converter",
+        prog="sa-convert",
         description="Converts data files between supported formats.",
     )
 
