@@ -2,10 +2,12 @@ from abc import ABC
 from argparse import ArgumentParser, HelpFormatter, Namespace, RawTextHelpFormatter
 from typing import Callable, NoReturn
 
+
 class ParserError(Exception):
     """
     Exceção base para erros relacionados ao parser.
     """
+
 
 class ParserHelpFormatter(RawTextHelpFormatter):
     """
@@ -35,7 +37,7 @@ class ParserHelpFormatter(RawTextHelpFormatter):
 
         if not action.option_strings:
             default = self._get_default_metavar_for_positional(action)
-            metavar, = self._metavar_formatter(action, default)(1)
+            (metavar,) = self._metavar_formatter(action, default)(1)
 
             return metavar
         else:
@@ -59,11 +61,11 @@ class ParserHelpFormatter(RawTextHelpFormatter):
 
         if action.nargs is None:
             return f"{get_metavar(1)[0]}"
-        elif action.nargs == '?':
+        elif action.nargs == "?":
             return f"[{get_metavar(1)[0]}]"
-        elif action.nargs == '*':
+        elif action.nargs == "*":
             return f"[{get_metavar(1)[0]}...]"
-        elif action.nargs == '+':
+        elif action.nargs == "+":
             return f"{get_metavar(1)[0]}..."
 
         return super()._format_args(action, default_metavar)

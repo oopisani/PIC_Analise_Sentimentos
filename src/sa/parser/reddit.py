@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-from sa.common import Parser, ParserNamespace
-
 from pathlib import Path
 
+from sa.common import Parser, ParserNamespace
 from sa.file import FileFormat
 from sa.model import Language
-
 
 DEFAULT_LANGUAGE = Language.PT
 """Variável de Linguagem Padrão base da busca do PRAW e NL."""

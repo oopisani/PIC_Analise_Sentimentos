@@ -1,5 +1,6 @@
-from praw import Reddit  # type: ignore[import-untyped]
 from string import Template
+
+from praw import Reddit  # type: ignore[import-untyped]
 
 
 class RedditClient(Reddit):
