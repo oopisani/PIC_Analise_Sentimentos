@@ -15,7 +15,7 @@ O script recebe duas diretivas estritas de arquivos de apontamento (`input_path`
 Execução direta via módulo Python na raiz do repositório:
 
 ```bash
-python -m script.convert -i dados.csv -if csv -o formato_novo.xlsx -of xlsx
+python -m scripts.convert -i dados.csv -if csv -o formato_novo.xlsx -of xlsx
 ```
 
 ## Parâmetros e Flags Suportados

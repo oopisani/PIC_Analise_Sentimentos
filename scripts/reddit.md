@@ -15,14 +15,14 @@ Captura variáveis sensíveis ambientais (`.env`) secretamente protegidas, passa
 Execução direta via módulo Python na raiz do repositório:
 
 ```bash
-python -m script.reddit -s conversas brasil desabafos -k linux python programacao -l pt -t 10000 -o extracao_dataset.xlsx -f xlsx
+python -m scripts.reddit -s conversas brasil desabafos -k linux python programacao -l pt -t 10000 -o extracao_dataset.xlsx -f xlsx
 ```
 
 ## Parâmetros e Flags Suportados
 
 | Flag Curta | Flag Estendida |  Tipo Suportado   | Obrigatório |  Valor Padrão   | Propósito / Descrição                                                                                |
 | :--------: | :------------- | :---------------: | :---------: | :-------------: | :--------------------------------------------------------------------------------------------------- |
-|    `-s`    | `--subreddits` |    $n$ Strings    |     Não     | `["conversas"]` | Nome da comunidade-alvo sendo batida na mineração (pode ser mais de uma).                            |
+|    `-s`    | `--subreddits` |    $n$ Strings    |   **Sim**   |        -        | Nome da comunidade-alvo sendo batida na mineração (pode ser mais de uma).                            |
 |    `-k`    | `--keywords`   |    $n$ Strings    |   **Sim**   |        -        | Palavra(s)-chave alvo a serem pesquisadas diretamente na coleta de dados.                            |
 |    `-l`    | `--language`   |  Enum `Language`  |     Não     |      `pt`       | Identificador que barra dados sujos em idiomas aleatórios. Suporta ISO `(pt, en, es)`.               |
 |    `-t`    | `--total`      |      Inteiro      |     Não     |     `50000`     | Contador teto que mata processo impedindo o raspador exceder as margens do provedor.                 |

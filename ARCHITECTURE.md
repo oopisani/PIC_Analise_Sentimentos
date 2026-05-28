@@ -12,7 +12,7 @@ O projeto é dividido fundamentalmente em duas grandes macro-áreas: os **Entryp
 
 ```text
 reddit-sentiment-analysis/
-├── script/                   <-- Entrypoints CLI (Apresentação / Invocação)
+├── scripts/                  <-- Entrypoints CLI (Apresentação / Invocação)
 │   ├── reddit.py             (Dispara Coleta)
 │   ├── view.py               (Dispara Visualização/NLP)
 │   └── convert.py            (Dispara Conversão de Arquivos)
@@ -31,9 +31,9 @@ reddit-sentiment-analysis/
 
 ## 3. Descrição Detalhada dos Componentes
 
-### 3.1. CLI e Argument Parsers (`script/` & `src/sa/parser/`)
+### 3.1. CLI e Argument Parsers (`scripts/` & `src/sa/parser/`)
 
-Os scripts localizados em `script/` funcionam estritamente como montadores de dependências (_Composition Roots_). Eles leem as variáveis de ambiente, invocam o `parser/` para transformar simples strings do terminal em instâncias de forte tipagem (`Path`, `FileFormat`, `Language`), instanciam classes concretas e engatilham os objetos orquestradores. A inteligência e regras de validação CLI vivem no `parser/`, isolando os scripts em `script` do resto do domínio.
+Os scripts localizados em `scripts/` funcionam estritamente como montadores de dependências (_Composition Roots_). Eles leem as variáveis de ambiente, invocam o `parser/` para transformar simples strings do terminal em instâncias de forte tipagem (`Path`, `FileFormat`, `Language`), instanciam classes concretas e engatilham os objetos orquestradores. A inteligência e regras de validação CLI vivem no `parser/`, isolando os scripts em `scripts` do resto do domínio.
 
 ### 3.2. Models e Core Domain (`model/`)
 
@@ -71,14 +71,9 @@ O tratamento de **stop words** ocorre em duas camadas complementares: uma dinâm
 
 Um exemplo clássico do percurso percorrido quando o script de Coleta Inicia a extração:
 
-1. **Invocação (CLI):** O usuário invoca `python ./script/reddit ...`. O Parser valida e retorna um Namespace.
-
+1. **Invocação (CLI):** O usuário invoca `python ./scripts/reddit ...`. O Parser valida e retorna um Namespace.
 2. **Setup:** O Factory instancia o Client (`client`) do Reddit a partir das variáveis de ambiente.
-
 3. **Extração:** O `RedditCollector` é atrelado e assume a transação. Iterará sobre Subreddits listados.
-
 4. **Verificação (Sub-Rotina NLP):** Enquanto colhe os dados puros, testa estocásticamente o conteúdo usando o avaliador natural de Idioma de NLP. O ignorado morre aqui.
-
 5. **Estruturação:** Informações extraídas via generator preenchem o modelo de domínio (`sa.model`) purificado.
-
 6. **Persistência I/O:** Baseado na Flag, o construtor instancia um Driver de Disco (ex: `XLSXPostSaver`) que absorve todos itens e conclui extrações pro disco.

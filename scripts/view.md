@@ -15,7 +15,7 @@ Verifica inicialmente a robustez de recebimento do Arquivo lido (tabelas lidas v
 Execução direta via módulo Python na raiz do repositório:
 
 ```bash
-python -m script.view -i extracao_dataset.xlsx -o output_graficos/ -s posts -n 20 -e extra_stopwords.csv
+python -m scripts.view -i extracao_dataset.xlsx -o output_graficos/ -s posts -n 20 -e extra_stopwords.csv
 ```
 
 ## Parâmetros e Flags Suportados

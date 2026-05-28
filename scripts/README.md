@@ -1,4 +1,4 @@
-# Executáveis CLI (script/)
+# Executáveis CLI (scripts/)
 
 Este diretório comporta os pontos de entrada (entrypoints) projetados para inicializar o sistema através do terminal ou console interativo.
 
@@ -22,4 +22,4 @@ Nesta pasta, estão os executáveis que movimentam todo o ecossistema. Consulte 
 - **[Renderizador Gráfico (`view.py`)](view.md)**: Consome as tabelas consolidadas, submete o texto final às bibliotecas de inteligência neural computacional (NLP/SpaCy) para retirar palavras inúteis e, finalmente gera Barcharts e Nuvens lexicais interativas no terminal.
 
 ## Instrução Geral
-Todos os CLI interativos devem respeitar e ser invocados sob uma rotina que utilize a pasta raiz do repositório como principal Path para que o interpretador resolva o módulo nativo (`python -m script.NOME_SCRIPT`). Respeite as tags `--help` fornecidas caso faltem mais detalhes durante o uso.
+Todos os CLI interativos devem respeitar e ser invocados sob uma rotina que utilize a pasta raiz do repositório como principal Path para que o interpretador resolva o módulo nativo (`python -m scripts.NOME_SCRIPT`). Respeite as tags `--help` fornecidas caso faltem mais detalhes durante o uso.
