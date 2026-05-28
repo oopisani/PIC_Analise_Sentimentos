@@ -6,11 +6,11 @@ A arquitetura foi pensada para ser modular, desacoplada e estrita, fornecendo fo
 
 ## Executáveis CLI
 
-Este projeto possui scripts de entrada estruturados na pasta `script/` que operam como o ponto inicial de contato para os analistas operacionais usarem as diversas vertentes criadas sob a infraestrutura. Consultar suas instruções individuais provê uma visão ampla dos comportamentos e restrições:
+Este projeto possui scripts de entrada estruturados na pasta `scripts/` que operam como o ponto inicial de contato para os analistas operacionais usarem as diversas vertentes criadas sob a infraestrutura. Consultar suas instruções individuais provê uma visão ampla dos comportamentos e restrições:
 
-- [Conversor de Extensões (`script/convert.py`)](script/convert.md)
-- [Crawler de Coleta NLP (`script/reddit.py`)](script/reddit.md)
-- [Renderizador Gráfico de Sentimentos (`script/view.py`)](script/view.md)
+- [Conversor de Extensões (`scripts/convert.py`)](scripts/convert.md)
+- [Crawler de Coleta NLP (`scripts/reddit.py`)](scripts/reddit.md)
+- [Renderizador Gráfico de Sentimentos (`scripts/view.py`)](scripts/view.md)
 
 ## Instalação e Configuração
 
@@ -35,11 +35,12 @@ Para configurar o ambiente de desenvolvimento e preparar a extração e as plota
    .venv\Scripts\activate
    ```
 
-3. **Instale as dependências essenciais:**
-   O ecossistema utiliza bibliotecas pesadas de mineração, PRAW (Reddit API), NLP e plotagem de gráficos:
+3. **Instale as dependências essenciais e o pacote local:**
+   O ecossistema utiliza bibliotecas pesadas de mineração, PRAW (Reddit API), NLP e plotagem de gráficos. A instalação do pacote local registrará os comandos executáveis (`sa-reddit`, `sa-view`, `sa-convert`) na sua interface:
 
    ```bash
    pip install -r requirements.txt
+   pip install -e .
    ```
 
 4. **Baixe o modelo do spaCy:**

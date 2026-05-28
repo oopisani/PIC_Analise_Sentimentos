@@ -38,6 +38,11 @@ dependencies = [
     "matplotlib",
 ]
 
+[project.scripts]
+sa-reddit = "scripts.reddit:main"
+sa-view = "scripts.view:main"
+sa-convert = "scripts.convert:main"
+
 [project.optional-dependencies]
 dev = [
     "pylint>=3.3.8",
@@ -47,7 +52,10 @@ dev = [
 ]
 
 [tool.poetry]
-packages = [{ include = "sa", from = "src" }]
+packages = [
+    { include = "sa", from = "src" },
+    { include = "scripts" }
+]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

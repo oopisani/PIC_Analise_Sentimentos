@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING, TypedDict
 if TYPE_CHECKING:
     from pandas import Timestamp
 
-    from sa.model.polarity import Polarity
-
 UNKNOWN_AUTHOR_PLACEHOLDER = "[UNKNOWN-AUTHOR]"
 """
 Constante utilizada para preencher lacunas de autoria em plataformas em que
@@ -29,7 +27,6 @@ class PostRecord(TypedDict):
         content_hash (str): Chave identificadora hash única para dedupagem via conteúdo literal.
         author (str): O nome do usúario autor postular original; atinge "[UNKNOWN-AUTHOR]" (Placeholder)
             se restrições no nó da árvore tiverem sido removidos.
-        category (str): O agrupamento que direcionou a tag em formato alfanumérico string (vindo do Enum `Polarity`).
         keyword (str): Ponto focal base no gatilho do acionamento de parser e descoberta via search.
         subreddit (str): Namespace ou fólio hierarquico interno da comunidade (r/algo).
         created_at (Timestamp): Classe de métricas temporal vinda da conversão Epoch para registro temporal rastreável.
@@ -40,7 +37,6 @@ class PostRecord(TypedDict):
     content: str
     content_hash: str
     author: str
-    category: str
     keyword: str
     subreddit: str
     created_at: "Timestamp"
@@ -52,7 +48,6 @@ def pack_post(
     content: str,
     author: str,
     keyword: str,
-    category: "Polarity",
     subreddit: str,
     created_at: "Timestamp",
 ) -> PostRecord:
@@ -72,7 +67,6 @@ def pack_post(
         content (str): Texto contido em thread self (Opcional internamente no Reddit mas retornado pelo wrapper).
         author (str): Autor resgatado durante a avaliação de API (podendo ser injetado Placeholder via controller).
         keyword (str): Identificador gatilho do Lexo na busca (eg 'ódio', 'amizade').
-        category (Polarity): Ponto de restrição e enums controlando as polaridades ("NEUTRAL", etc).
         subreddit (str): Nó agrupador da rede social acessada.
         created_at (Timestamp): Métrica original já ajustada aos padrões tipados por Pandas para estocagem atemporal.
 
@@ -94,7 +88,6 @@ def pack_post(
         "content_hash": content_hash,
         "author": author,
         "keyword": keyword,
-        "category": category.value,
         "subreddit": subreddit,
         "created_at": created_at,
     }

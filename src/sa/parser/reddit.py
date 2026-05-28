@@ -9,8 +9,6 @@ from pathlib import Path
 from sa.file import FileFormat
 from sa.model import Language
 
-DEFAULT_SUBREDDIT = "conversas"
-"""Nó padrão estipulado em caso de flag `--subreddits` ausente no console."""
 
 DEFAULT_LANGUAGE = Language.PT
 """Variável de Linguagem Padrão base da busca do PRAW e NL."""
@@ -39,17 +37,21 @@ class RedditParserNamespace(ParserNamespace):
 
     Attributes:
         subreddits (list[str]): Coleção ordenada das strings (nomes de abas Reddit alvo) processadas em massa.
+        keywords (list[str]): Lista de palavras-chave a serem pesquisadas no reddit.
         language (Language): Estrutura enumerador de filtragem (es, pt).
         total (int): Volume numérico int teto usado na função `limit`.
         output (Path): Path consolidado garantindo compatibilidade da saída.
         format (FileFormat): Sinalética rigorosa para driver interpretador (pandas: csv/xlsx).
+        verbose (bool): Define a verbosidade do logger (DEBUG vs INFO).
     """
 
     subreddits: list[str]
+    keywords: list[str]
     language: Language
     total: int
     output: Path
     format: FileFormat
+    verbose: bool
 
 
 def create_reddit_parser() -> RedditParser:
@@ -65,7 +67,7 @@ def create_reddit_parser() -> RedditParser:
 
     parser = RedditParser(
         prog="sa-reddit",
-        description="Coleta posts do Reddit filtrados por palavras-chave e exporta para arquivo.",
+        description="Collects Reddit posts filtered by keywords and exports them to a file.",
     )
 
     parser.add_argument(
@@ -73,8 +75,17 @@ def create_reddit_parser() -> RedditParser:
         "--subreddits",
         type=str,
         nargs="+",
-        default=[DEFAULT_SUBREDDIT],
-        help=f"Subreddit(s) alvo da coleta, separados por espaço (default: {DEFAULT_SUBREDDIT}).",
+        required=True,
+        help="Target subreddit(s) for collection, space-separated.",
+    )
+
+    parser.add_argument(
+        "-k",
+        "--keywords",
+        type=str,
+        nargs="+",
+        required=True,
+        help="Target keyword(s) for collection, space-separated.",
     )
 
     parser.add_argument(
@@ -83,7 +94,7 @@ def create_reddit_parser() -> RedditParser:
         type=Language,
         choices=[lang.value for lang in Language],
         default=DEFAULT_LANGUAGE.value,
-        help=f"Idioma dos posts a serem coletados (default: {DEFAULT_LANGUAGE.value}).",
+        help=f"Language of the posts to be collected (default: {DEFAULT_LANGUAGE.value}).",
     )
 
     parser.add_argument(
@@ -91,7 +102,7 @@ def create_reddit_parser() -> RedditParser:
         "--total",
         type=int,
         default=DEFAULT_TOTAL_PER_WORD,
-        help=f"Limite máximo de posts coletados por palavra-chave (default: {DEFAULT_TOTAL_PER_WORD}).",
+        help=f"Maximum limit of posts collected per keyword (default: {DEFAULT_TOTAL_PER_WORD}).",
     )
 
     parser.add_argument(
@@ -99,16 +110,17 @@ def create_reddit_parser() -> RedditParser:
         "--output",
         type=Path,
         required=True,
-        help="Caminho do arquivo de saída para os posts coletados.",
+        help="Output file path for the collected posts.",
     )
 
     parser.add_argument(
         "-f",
         "--format",
         type=FileFormat,
-        choices=[fmt.value for fmt in FileFormat],
-        default=DEFAULT_OUTPUT_FORMAT.value,
-        help=f"Formato desejado para o arquivo de saída (default: {DEFAULT_OUTPUT_FORMAT.value}).",
+        choices=[fmt for fmt in FileFormat],
+        default=DEFAULT_OUTPUT_FORMAT,
+        metavar=f"{{{','.join(fmt.value for fmt in FileFormat)}}}",
+        help=f"Desired format for the output file (default: {DEFAULT_OUTPUT_FORMAT.value}).",
     )
 
     return parser

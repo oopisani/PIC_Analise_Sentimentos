@@ -6,7 +6,7 @@ from sa.common import Parser, ParserNamespace
 
 from pathlib import Path
 
-DEFAULT_SHEETS = ["positivo", "negativo", "neutro"]
+DEFAULT_SHEETS = ["posts"]
 """Abas tabulares base utilizadas quando nenhum `-s` é indicado ao acionar o processador do gráfico."""
 
 DEFAULT_TOP_N = 20
@@ -57,7 +57,7 @@ def create_wordcloud_parser() -> WordCloudParser:
 
     parser = WordCloudParser(
         prog="sa-wordcloud",
-        description="Gera nuvens de palavras e gráficos de frequência a partir de arquivos de posts.",
+        description="Generates word clouds and frequency charts from post files.",
     )
 
     parser.add_argument(
@@ -65,7 +65,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         "--input-path",
         type=Path,
         required=True,
-        help="Caminho do arquivo de entrada contendo os dados (Excel ou CSV).",
+        help="Path of the input file containing the data (Excel or CSV).",
     )
 
     parser.add_argument(
@@ -73,7 +73,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         "--output-dir",
         type=Path,
         required=True,
-        help="Caminho do diretório de saída para as imagens geradas.",
+        help="Path of the output directory for the generated images.",
     )
 
     parser.add_argument(
@@ -82,7 +82,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         type=str,
         nargs="+",
         default=DEFAULT_SHEETS,
-        help=f"Nome(s) da(s) aba(s) a processar, separados por espaço (default: {' '.join(DEFAULT_SHEETS)}).",
+        help=f"Name(s) of the sheet(s) to process, space-separated (default: {' '.join(DEFAULT_SHEETS)}).",
     )
 
     parser.add_argument(
@@ -90,7 +90,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         "--top-n",
         type=int,
         default=DEFAULT_TOP_N,
-        help=f"Quantidade de palavras mais frequentes a exibir no gráfico (default: {DEFAULT_TOP_N}).",
+        help=f"Amount of most frequent words to display on the chart (default: {DEFAULT_TOP_N}).",
     )
 
     parser.add_argument(
@@ -98,7 +98,7 @@ def create_wordcloud_parser() -> WordCloudParser:
         "--extras",
         type=Path,
         default=None,
-        help="Caminho do arquivo CSV contendo stopwords extras.",
+        help="Path of the CSV file containing extra stopwords.",
     )
 
     return parser
