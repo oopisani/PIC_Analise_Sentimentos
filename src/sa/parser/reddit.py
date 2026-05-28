@@ -117,8 +117,9 @@ def create_reddit_parser() -> RedditParser:
         "-f",
         "--format",
         type=FileFormat,
-        choices=[fmt.value for fmt in FileFormat],
-        default=DEFAULT_OUTPUT_FORMAT.value,
+        choices=[fmt for fmt in FileFormat],
+        default=DEFAULT_OUTPUT_FORMAT,
+        metavar=f"{{{','.join(fmt.value for fmt in FileFormat)}}}",
         help=f"Desired format for the output file (default: {DEFAULT_OUTPUT_FORMAT.value}).",
     )
 

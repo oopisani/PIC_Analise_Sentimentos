@@ -23,7 +23,7 @@ class ParserHelpFormatter(RawTextHelpFormatter):
             prog (str): Nome do programa em execução (fornecido pelo ArgumentParser).
         """
 
-        super().__init__(prog, max_help_position=32, width=95)
+        super().__init__(prog, max_help_position=38, width=100)
 
     def _format_action_invocation(self, action):
         """

@@ -81,6 +81,7 @@ def create_conveter_parser() -> ConverterParser:
         type=FileFormat,
         choices=[fmt for fmt in FileFormat],
         required=True,
+        metavar=f"{{{','.join(fmt.value for fmt in FileFormat)}}}",
         help="Original format of the input file.",
     )
 
@@ -90,6 +91,7 @@ def create_conveter_parser() -> ConverterParser:
         type=FileFormat,
         choices=[fmt for fmt in FileFormat],
         required=True,
+        metavar=f"{{{','.join(fmt.value for fmt in FileFormat)}}}",
         help="Desired format for the output file.",
     )
 
