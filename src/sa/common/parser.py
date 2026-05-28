@@ -1,6 +1,6 @@
 from abc import ABC
-from argparse import ArgumentParser, HelpFormatter, Namespace, RawTextHelpFormatter
-from typing import Callable, NoReturn
+from argparse import Action, ArgumentParser, HelpFormatter, Namespace, RawTextHelpFormatter
+from typing import Any, Callable, NoReturn
 
 
 class ParserError(Exception):
@@ -27,7 +27,7 @@ class ParserHelpFormatter(RawTextHelpFormatter):
 
         super().__init__(prog, max_help_position=38, width=100)
 
-    def _format_action_invocation(self, action):
+    def _format_action_invocation(self, action: Action) -> str:
         """
         Formata a string de invocação da ação (ex: '-k, --keywords KEYWORDS...').
 
@@ -49,7 +49,7 @@ class ParserHelpFormatter(RawTextHelpFormatter):
             else:
                 return ", ".join(action.option_strings)
 
-    def _format_args(self, action, default_metavar):
+    def _format_args(self, action: Action, default_metavar: Any) -> str:
         """
         Formata a representação visual dos argumentos baseada no 'nargs' da flag.
 

@@ -1,5 +1,6 @@
+from datetime import datetime
 from hashlib import md5
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, TypedDict, Union
 
 if TYPE_CHECKING:
     from pandas import Timestamp
@@ -39,7 +40,7 @@ class PostRecord(TypedDict):
     author: str
     keyword: str
     subreddit: str
-    created_at: "Timestamp"
+    created_at: Union["Timestamp", datetime]
 
 
 def pack_post(
@@ -49,7 +50,7 @@ def pack_post(
     author: str,
     keyword: str,
     subreddit: str,
-    created_at: "Timestamp",
+    created_at: Union["Timestamp", datetime],
 ) -> PostRecord:
     """
     Empacota um post bruto coletado e o consolida na infraestrutura tipada
