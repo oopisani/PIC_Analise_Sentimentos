@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from sa.client import create_reddit_client
 from sa.collector import RedditCollector
+from sa.common import ParserError
 from sa.file import CSVPostSaver, FileFormat, XLSXPostSaver
 from sa.logger import create_logger, create_reddit_logger
 from sa.model import Language
@@ -128,8 +129,8 @@ def main() -> None:
         _main()
     except KeyboardInterrupt:
         print("Coleta interrompida pelo usuário.")
-    except RuntimeError as e:
-        print(f"Erro de uso ou execução: {e}")
+    except ParserError as e:
+        print(f"Erro de uso: {e}")
         exit(2)
     except Exception as e:
         print(f"Falha fatal não tratada: {e}")

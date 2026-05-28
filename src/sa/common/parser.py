@@ -2,6 +2,10 @@ from abc import ABC
 from argparse import ArgumentParser, HelpFormatter, Namespace
 from typing import Callable, NoReturn
 
+class ParserError(Exception):
+    """
+    Exceção base para erros relacionados ao parser.
+    """
 
 class Parser(ABC, ArgumentParser):
     def __init__(
@@ -31,7 +35,7 @@ class Parser(ABC, ArgumentParser):
         )
 
     def error(self, message: str) -> NoReturn:
-        raise RuntimeError(message)
+        raise ParserError(message)
 
     def get_formatter_class(self) -> Callable[..., HelpFormatter]:
         return self._default_formatter_factory

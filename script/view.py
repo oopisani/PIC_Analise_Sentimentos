@@ -8,6 +8,7 @@ from typing import NoReturn
 
 import spacy
 
+from sa.common import ParserError
 from sa.file import XLSXColumnReader
 from sa.logger import create_logger
 from sa.nlp import build_stopwords, preprocess_text
@@ -117,8 +118,8 @@ def main() -> None:
         _main()
     except KeyboardInterrupt:
         print("Processo interrompido pelo usuário.")
-    except RuntimeError as e:
-        print(f"Erro de uso ou execução: {e}")
+    except ParserError as e:
+        print(f"Erro de uso: {e}")
         exit(2)
     except Exception as e:
         print(f"Falha fatal não tratada: {e}")

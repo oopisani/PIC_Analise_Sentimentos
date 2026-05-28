@@ -5,6 +5,7 @@ from __future__ import annotations
 from sys import argv, exit
 from typing import NoReturn
 
+from sa.common import ParserError
 from sa.file import ConverterFactory
 from sa.logger import create_logger
 from sa.parser import parse_converter_args
@@ -68,7 +69,7 @@ def main() -> None:
         _main()
     except KeyboardInterrupt:
         print("Conversão interrompida pelo usuário.")
-    except RuntimeError as e:
+    except ParserError as e:
         print(f"Erro de uso ou execução: {e}")
         exit(2)
     except Exception as e:
