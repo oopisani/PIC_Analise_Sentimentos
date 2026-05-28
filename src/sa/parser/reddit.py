@@ -9,8 +9,6 @@ from pathlib import Path
 from sa.file import FileFormat
 from sa.model import Language
 
-DEFAULT_SUBREDDIT = "conversas"
-"""Nó padrão estipulado em caso de flag `--subreddits` ausente no console."""
 
 DEFAULT_LANGUAGE = Language.PT
 """Variável de Linguagem Padrão base da busca do PRAW e NL."""
@@ -77,8 +75,8 @@ def create_reddit_parser() -> RedditParser:
         "--subreddits",
         type=str,
         nargs="+",
-        default=[DEFAULT_SUBREDDIT],
-        help=f"Target subreddit(s) for collection, space-separated (default: {DEFAULT_SUBREDDIT}).",
+        required=True,
+        help="Target subreddit(s) for collection, space-separated.",
     )
 
     parser.add_argument(
