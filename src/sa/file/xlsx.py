@@ -65,7 +65,10 @@ class XLSXPostSaver(FileSaverABC["PostRecord"]):
         df = pd.DataFrame(posts_list)
 
         if "created_at" in df.columns:
-            df["created_at"] = pd.to_datetime(df["created_at"], errors="coerce")
+            if pd.api.types.is_numeric_dtype(df["created_at"]):
+                df["created_at"] = pd.to_datetime(df["created_at"], unit="s", errors="coerce")
+            else:
+                df["created_at"] = pd.to_datetime(df["created_at"], errors="coerce")
 
         df.to_excel(self._path, index=False, sheet_name=self._sheet_name)
 

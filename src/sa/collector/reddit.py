@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Generator, Optional
 
 from sa.model import UNKNOWN_AUTHOR_PLACEHOLDER, pack_post
@@ -154,7 +155,7 @@ class RedditCollector:
             author=str(post.author) if post.author else UNKNOWN_AUTHOR_PLACEHOLDER,
             keyword=keyword,
             subreddit=self._subreddit_name,
-            created_at=post.created_utc,
+            created_at=datetime.fromtimestamp(post.created_utc, tz=timezone.utc).replace(tzinfo=None),
         )
 
     def _check_post_language(self, post: "PostRecord", lang: "Language") -> bool:
